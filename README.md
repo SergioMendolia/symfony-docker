@@ -1,1 +1,1 @@
-# symfony5-docker
+This is a generic dockerfile for local drupal development.

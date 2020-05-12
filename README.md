@@ -1,1 +1,1 @@
-This is a generic dockerfile for local drupal development.
+This is a generic dockerfile for local Symfony5 development

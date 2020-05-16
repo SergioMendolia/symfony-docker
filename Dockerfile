@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     libx11-6 \
     libxext6 \
     libxml2-dev \
+    libgd3 \
+    libgd-dev \
     libxrender1 \
     libxslt-dev \
     libxslt1-dev \
@@ -43,7 +45,7 @@ RUN apt-get update && apt-get install -y \
     # Remove apt cache from layer
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install -j$(nproc) gd
 RUN docker-php-ext-install -j$(nproc) iconv  opcache xml intl pdo_mysql xsl curl json zip bcmath mbstring exif fileinfo dom
 RUN apt-get purge -y --auto-remove libfreetype6-dev libcurl4-openssl-dev libicu-dev libpng-dev libssl-dev libxml2-dev libxslt-dev libfreetype6-dev libzip-dev zlib1g-dev
 RUN a2enmod rewrite

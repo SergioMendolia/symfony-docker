@@ -1,29 +1,9 @@
-FROM php:7.4-apache-buster
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
+FROM php:8.1-apache-bullseye
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 
 RUN apt-get update && apt-get install -y \
     # Tools
     vim git curl cron wget zip unzip \
-    # libs
-    libcurl4-openssl-dev \
-    libfreetype6-dev \
-    libicu-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libssl-dev \
-    libwebp-dev \
-    libx11-6 \
-    libxext6 \
-    libxml2-dev \
-    libgd3 \
-    libgd-dev \
-    libxrender1 \
-    libxslt-dev \
-    libxslt1-dev \
-    libxslt1.1 \
-    libzip-dev \
-    libzip4 \
-    zlib1g-dev \
     # Others
     acl \
     apt-transport-https \
@@ -39,15 +19,14 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     pkg-config \
     software-properties-common \
-    supervisor \
-    xfonts-75dpi \
-    xfonts-base \
     # Remove apt cache from layer
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && docker-php-ext-install -j$(nproc) gd
-RUN docker-php-ext-install -j$(nproc) iconv  opcache xml intl pdo_mysql xsl curl json zip bcmath mbstring exif fileinfo dom
-RUN apt-get purge -y --auto-remove libfreetype6-dev libcurl4-openssl-dev libicu-dev libpng-dev libssl-dev libxml2-dev libxslt-dev libfreetype6-dev libzip-dev zlib1g-dev
+# auto install dependencies and remove libs after installing ext: https://github.com/mlocati/docker-php-extension-installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions iconv ldap opcache xml intl pdo_mysql xsl curl json zip bcmath mbstring exif fileinfo dom gd calendar
+
+RUN apt-get purge -y --auto-remove
 RUN a2enmod rewrite
 
 # create TMP dir

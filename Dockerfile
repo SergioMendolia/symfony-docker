@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     pkg-config \
     software-properties-common \
+    libmagickwand-dev \
+    libmagickcore-dev \
     # Remove apt cache from layer
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,7 +30,7 @@ RUN install-php-extensions iconv ldap opcache xml intl pdo_mysql xsl curl json z
 
 RUN apt-get purge -y --auto-remove
 RUN a2enmod rewrite
-
+RUN pecl install imagick
 # create TMP dir
 RUN mkdir -p /tmp/uploads/ && chmod +w -R /tmp/
 
